@@ -6,7 +6,7 @@ class Prototype {
 		if(args.size() == 1) {
 			return args[0]
 		} else {
-			return args
+			return args as List
 		}
 	}
 

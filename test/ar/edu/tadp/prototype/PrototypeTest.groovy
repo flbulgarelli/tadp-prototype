@@ -17,19 +17,19 @@ class PrototypeTest {
 		a.operador2 = 4
 
 		a.suma = {
-			operador3 -> operador3 + delegate.operador1 + delegate.operador2
+			operador3 , operador4->  operador4 + operador3 + delegate.operador1 + delegate.operador2
 		}
-		assert a.suma(3) == 8
+		assert a.suma(3, 0) == 8
 
 
 		def b = new Object()
 		b.prototype = a
 		
 		assert b.operador1 == 1
-		assert b.suma(3) == 8
+		assert b.suma(3, 2) == 10
 		
 		b.operador2 = 10
 		
-		assert b.suma(3) == 14
+		assert b.suma(3, 4) == 18
 	}
 }
