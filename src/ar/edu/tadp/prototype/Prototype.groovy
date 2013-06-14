@@ -3,11 +3,7 @@ package ar.edu.tadp.prototype
 class Prototype {
 
 	static getArgs(args){
-		if(args.size() == 1) {
-			return args[0]
-		} else {
-			return args as List
-		}
+		return args as List
 	}
 
 	static init() {
@@ -32,8 +28,7 @@ class Prototype {
 
 			callMethod = {name, args, target ->
 				if(dynamicProperties.containsKey(name)
-				&& dynamicProperties[name] instanceof Closure
-				&& dynamicProperties[name].getMaximumNumberOfParameters() == args.size()) {
+				&& dynamicProperties[name] instanceof Closure) {
 					return dynamicProperties[name].rehydrate(target, target, target).call(getArgs(args))
 				} else if(prototype!=null) {
 					return prototype.callMethod(name, args, target)

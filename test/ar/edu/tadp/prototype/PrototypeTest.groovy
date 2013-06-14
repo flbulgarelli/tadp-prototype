@@ -19,6 +19,7 @@ class PrototypeTest {
 		a.suma = {
 			operador3 , operador4->  operador4 + operador3 + delegate.operador1 + delegate.operador2
 		}
+		
 		assert a.suma(3, 0) == 8
 
 
@@ -29,7 +30,15 @@ class PrototypeTest {
 		assert b.suma(3, 2) == 10
 		
 		b.operador2 = 10
-		
+
 		assert b.suma(3, 4) == 18
+		
+		b.otraSuma = {operador -> delegate.operador1 + operador}
+		
+		assert b.otraSuma(5) == 6
+		
+		b.sumaFinal = {operador1 + operador2}
+		
+		assert b.sumaFinal() == 11
 	}
 }
