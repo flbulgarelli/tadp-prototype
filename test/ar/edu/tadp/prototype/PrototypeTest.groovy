@@ -30,6 +30,7 @@ class PrototypeTest {
 		assert b.suma(3, 2) == 10
 		
 		b.operador2 = 10
+		assert a.operador2 == 4
 
 		assert b.suma(3, 4) == 18
 		

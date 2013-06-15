@@ -10,8 +10,8 @@ class Prototype {
 		Object.metaClass {
 			prototype = null
 
-			dynamicProperties = [:]
-
+			dynamicProperties = null
+			
 			propertyMissing = { String name, value ->
 				dynamicProperties[name] = value
 			}
@@ -33,11 +33,19 @@ class Prototype {
 				} else if(prototype!=null) {
 					return prototype.callMethod(name, args, target)
 				}
-				throw new MissingMethodException(name, delegate.getClass(), args)
+				throw new MissingMethodException(name, target.getClass(), args)
 			}
 
 			methodMissing = { String name, args ->
 				callMethod(name, args, delegate)
+			}
+			
+			def oldConstructor = Object.metaClass.retrieveConstructor()
+			
+			constructor = {
+				def newInstance = oldConstructor.newInstance()
+				newInstance.dynamicProperties = [:]
+				newInstance
 			}
 		}
 	}
