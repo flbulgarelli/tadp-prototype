@@ -3,10 +3,10 @@ package ar.edu.tadp.prototype
 import org.junit.BeforeClass;
 import org.junit.Test
 
-class PrototypeTest {
+class PrototypesTest {
 
 	static {
-		Prototype.init()
+		Prototypes.init()
 	}
 
 	@Test
@@ -24,13 +24,12 @@ class PrototypeTest {
 
 
 		def b = new Object()
-		b.prototype = a
+		b.addPrototype(a)
 		
 		assert b.operador1 == 1
 		assert b.suma(3, 2) == 10
 		
 		b.operador2 = 10
-		assert a.operador2 == 4
 
 		assert b.suma(3, 4) == 18
 		
@@ -41,18 +40,15 @@ class PrototypeTest {
 		b.sumaFinal = {operador1 + operador2}
 		
 		assert b.sumaFinal() == 11
-
-		//Objeto callable
-		def aCallable = new Object()
-		aCallable.estadoPropio = 20
 		
-		aCallable.callOn = { callable, anObject, args ->
-			anObject.suma(*args) + anObject.otraSuma(args[0]) + estadoPropio
+		def c = new Object()
+		
+		b.addPrototype(c)
+		
+		c.multiplicacion = {
+			operador1 * operador2	
 		}
 		
-		b.cosaRara = aCallable
-		
-		assert b.cosaRara(3,4) == 42
-		
+		assert b.multiplicacion() == 10
 	}
 }

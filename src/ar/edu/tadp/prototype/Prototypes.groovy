@@ -1,6 +1,6 @@
 package ar.edu.tadp.prototype
 
-class Prototype {
+class Prototypes {
 
 	static getArgs(args){
 		return args as List
@@ -8,10 +8,10 @@ class Prototype {
 
 	static init() {
 		Object.metaClass {
-			prototype = null
+			prototypes = null
 
 			dynamicProperties = null
-			
+
 			propertyMissing = { String name, value ->
 				dynamicProperties[name] = value
 			}
@@ -19,11 +19,20 @@ class Prototype {
 			propertyMissing = { String name ->
 				if(dynamicProperties.containsKey(name)){
 					return dynamicProperties[name]
-				} else if(prototype != null) {
-					return prototype."$name"
+				} else {
+					for (prototype in prototypes) {
+						try {
+							return prototype."$name"
+						} catch (MissingPropertyException e) {
+						}
+					}
 				}
 
 				throw new MissingPropertyException(name, delegate.getClass())
+			}
+
+			addPrototype = { aPrototype ->
+				prototypes.add(aPrototype)
 			}
 
 			methodMissing = { String name, args ->
@@ -34,17 +43,17 @@ class Prototype {
 					throw new MissingMethodException(name, delegate.getClass(), args)
 				}
 			}
-			
+
 			def oldConstructor = Object.metaClass.retrieveConstructor()
-			
+
 			constructor = {
 				def newInstance = oldConstructor.newInstance()
 				newInstance.dynamicProperties = [:]
+				newInstance.prototypes = []
 				newInstance
 			}
-			
 		}
-		
+
 		/*
 		 * ¿Por qué esto y no el withParams? Esto permite mandar un objeto que implemente el mensaje callOn, y funciona :)
 		 */
