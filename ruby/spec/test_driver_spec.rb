@@ -1,5 +1,27 @@
 require 'rspec'
 
+class Object
+  def method_missing(name, *args)
+    asignacion = name.to_s.scan /(.+)=/
+    unless asignacion.empty?
+      proto_asignar_slot(asignacion[0][0], args[0])
+    else
+      super
+    end
+
+  end
+
+  def proto_asignar_slot(slot, valor)
+    if (valor.instance_of?(Proc))
+      define_singleton_method(slot, &valor)
+    else
+      define_singleton_method(slot) do
+        valor
+      end
+    end
+  end
+end
+
 describe 'extension de prototipos' do
 
   context 'cuando se asigna a un slot  un valor que no es un bloque' do
@@ -8,6 +30,15 @@ describe 'extension de prototipos' do
       a.x = 1
       a.x.should == 1
     end
+
+    it 'deberia soportar ser reasignado' do
+      a = Object.new
+      a.x = 1
+      a.x = 2
+      a.x.should == 2
+    end
+
+
   end
 
   context 'cuando se asigna a un slot un valor que ES un bloque' do
