@@ -1,14 +1,17 @@
 require 'rspec'
 
 class Object
+  attr_accessor :prototype
+
   def method_missing(name, *args)
     asignacion = name.to_s.scan /(.+)=/
-    unless asignacion.empty?
+    if !asignacion.empty?
       proto_asignar_slot(asignacion[0][0], args[0])
+    elsif !prototype.nil?
+      prototype.send(name, *args)
     else
       super
     end
-
   end
 
   def proto_asignar_slot(slot, valor)
@@ -60,17 +63,33 @@ describe 'extension de prototipos' do
     it 'deberia delegar sus mensajes no entendidos al prototipo' do
       p = Object.new
       p.x = 4
+
       a = Object.new
-      a.protoype = p
+      a.prototype = p
+
       a.x.should == 4
     end
 
     it 'deberia darle prioridad a sus slots por sobre los del prototipo' do
-      pending
+      p = Object.new
+      p.x = 4
+
+      a = Object.new
+      a.x = 2
+      a.prototype = p
+
+      a.x.should == 2
     end
 
     it 've modificado su comportamiento si el protoripo cambia el suyo' do
-      pending
+      p = Object.new
+      p.x = 4
+
+      a = Object.new
+      a.prototype = p
+
+      p.x = 3
+      a.x.should == 3
     end
 
   end
